@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Flight Log</title>
     <style>
         :root {
@@ -18,6 +18,8 @@
             --type-self-light: #eef2ff;
             --type-sex: #dc2626;
             --type-sex-light: #fef2f2;
+            --type-wet: #5a9e8c;
+            --type-wet-light: #e8f5f0;
             --type-train: #eab308;
             --type-train-light: #fef9c3;
             --danger: #d15252;
@@ -278,13 +280,13 @@
         }
         .type-btn {
             flex: 1;
-            min-width: 80px;
-            padding: 12px 10px;
+            min-width: 70px;
+            padding: 12px 8px;
             border: 2px solid var(--border);
             border-radius: var(--radius-sm);
             background: #fafafa;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-secondary);
             display: flex;
@@ -299,11 +301,13 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
         .type-btn .type-icon svg {
             width: 100%;
             height: 100%;
             stroke: currentColor;
+            fill: currentColor;
         }
         .type-btn.selected-self {
             border-color: var(--type-self);
@@ -314,6 +318,11 @@
             border-color: var(--type-sex);
             background: var(--type-sex-light);
             color: var(--type-sex);
+        }
+        .type-btn.selected-wet {
+            border-color: var(--type-wet);
+            background: var(--type-wet-light);
+            color: var(--type-wet);
         }
         .type-btn.selected-train {
             border-color: var(--type-train);
@@ -380,6 +389,7 @@
             width: 100%;
             height: 100%;
             stroke: currentColor;
+            fill: currentColor;
         }
         .stat-card.accent-blue {
             border-left: 3px solid var(--type-self);
@@ -390,12 +400,12 @@
             background: #fdfaf9;
         }
         .stat-card.accent-teal {
-            border-left: 3px solid #5a9e8c;
+            border-left: 3px solid var(--type-wet);
             background: #f9fcfa;
         }
-        .stat-card.accent-purple {
-            border-left: 3px solid #8b7db8;
-            background: #fbfafd;
+        .stat-card.accent-yellow {
+            border-left: 3px solid var(--type-train);
+            background: var(--type-train-light);
         }
         .stat-value.blue {
             color: var(--type-self);
@@ -404,10 +414,10 @@
             color: var(--type-sex);
         }
         .stat-value.teal {
-            color: #5a9e8c;
+            color: var(--type-wet);
         }
-        .stat-value.purple {
-            color: #8b7db8;
+        .stat-value.yellow {
+            color: var(--type-train);
         }
 
         .records-card {
@@ -440,10 +450,23 @@
             gap: 12px;
             padding: 13px 10px;
             border-bottom: 1px solid #f0f0f3;
+            cursor: default;
+            user-select: none;
+            -webkit-touch-callout: none;
+            transition: background 0.2s, transform 0.2s, border-radius 0.2s;
+            border-radius: 0;
+            position: relative;
+            touch-action: manipulation;
         }
         .record-item:last-child {
             border-bottom: none;
         }
+        .record-item.long-pressing {
+            background: var(--danger-light);
+            border-radius: var(--radius-sm);
+            transform: scale(0.98);
+        }
+
         .record-type-badge {
             width: 38px;
             height: 38px;
@@ -452,11 +475,13 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
+            flex-shrink: 0;
         }
         .record-type-badge svg {
             width: 20px;
             height: 20px;
             stroke: currentColor;
+            fill: currentColor;
         }
         .badge-self {
             background: var(--type-self-light);
@@ -466,9 +491,17 @@
             background: var(--type-sex-light);
             color: var(--type-sex);
         }
+        .badge-wet {
+            background: var(--type-wet-light);
+            color: var(--type-wet);
+        }
         .badge-train {
             background: var(--type-train-light);
             color: var(--type-train);
+        }
+        .record-info {
+            flex: 1;
+            min-width: 0;
         }
         .record-info .record-date {
             font-weight: 700;
@@ -482,14 +515,7 @@
             gap: 8px;
             align-items: center;
             margin-top: 2px;
-        }
-        .btn-delete {
-            background: none;
-            border: none;
-            font-size: 1.1rem;
-            color: #bbb;
-            padding: 6px;
-            cursor: pointer;
+            flex-wrap: wrap;
         }
 
         .chart-card {
@@ -544,6 +570,7 @@
         }
         .bar-self,
         .bar-sex,
+        .bar-wet,
         .bar-train {
             width: 8px;
             border-radius: 4px 4px 0 0;
@@ -554,6 +581,9 @@
         }
         .bar-sex {
             background: var(--type-sex);
+        }
+        .bar-wet {
+            background: var(--type-wet);
         }
         .bar-train {
             background: var(--type-train);
@@ -668,6 +698,9 @@
             z-index: 9999;
             transition: transform 0.35s;
             font-family: var(--font-mono);
+            max-width: 90%;
+            text-align: center;
+            pointer-events: none;
         }
         .toast.show {
             transform: translateX(-50%) translateY(0);
@@ -683,6 +716,7 @@
             }
             .bar-self,
             .bar-sex,
+            .bar-wet,
             .bar-train {
                 width: 12px;
             }
@@ -692,6 +726,21 @@
             .record-dot {
                 width: 6px;
                 height: 6px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .type-btn {
+                font-size: 0.72rem;
+                padding: 10px 4px;
+                min-width: 56px;
+            }
+            .type-btn .type-icon {
+                width: 16px;
+                height: 16px;
+            }
+            .app-title {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -750,26 +799,43 @@
                     <label><span class="label-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg></span>类型</label>
                     <div class="type-toggle-group">
                         <button class="type-btn selected-self" id="typeBtnSelf" onclick="selectType('self')">
-                            <span class="type-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg></span>
+                            <span class="type-icon">
+                                <!-- 自慰：手形图标 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <path fill="currentColor" d="M20.988 12.396L16 9.545V4.75c0-1.93-1.57-3.5-3.5-3.5S9 2.82 9 4.75v4.795l-4.988 2.851a3 3 0 0 0 2.313 5.489L9 17.12v.838l-.874.699a3 3 0 0 0 3.216 5.025c.004-.001.5-.183 1.158-.183l1.158.183a2.998 2.998 0 0 0 3.216-5.025L16 17.958v-.838l2.676.765a2.999 2.999 0 0 0 2.312-5.489m-.566 2.992a1 1 0 0 1-1.196.573L14 14.469v4.451l1.625 1.3a1 1 0 0 1-1.072 1.675c-.008-.004-.824-.395-2.053-.395s-2.045.391-2.053.395a1 1 0 0 1-1.072-1.675L11 18.92v-4.451l-5.226 1.493a1 1 0 0 1-.77-1.829L11 10.706V4.75c0-.827.673-1.5 1.5-1.5s1.5.673 1.5 1.5v5.956l5.996 3.426a1 1 0 0 1 .426 1.256" />
+                                    <circle cx="12.5" cy="4.5" r=".5" fill="currentColor" />
+                                </svg>
+                            </span>
                             自慰
                         </button>
                         <button class="type-btn" id="typeBtnSex" onclick="selectType('sex')">
                             <span class="type-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <g transform="translate(2,12) scale(0.6)">
-                                        <path d="M22 2L11 13"/>
-                                        <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-                                    </g>
-                                    <g transform="translate(22,10) scale(0.6) rotate(180)">
-                                        <path d="M22 2L11 13"/>
-                                        <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-                                    </g>
+                                <!-- 性交：爱心图标 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
                                 </svg>
                             </span>
-                            性生活
+                            性交
+                        </button>
+                        <button class="type-btn" id="typeBtnWet" onclick="selectType('wet')">
+                            <span class="type-icon">
+                                <!-- 遗精：水滴图标 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                    <path fill="currentColor" d="m12 3.77l-.75.84S9.97 6.06 8.68 7.94S6 12.07 6 14.23a6 6 0 0 0 6 6a6 6 0 0 0 6-6c0-2.16-1.39-4.41-2.68-6.29s-2.57-3.33-2.57-3.33zm0 3.13c.44.52.84.95 1.68 2.17c1.21 1.76 2.32 4 2.32 5.16c0 2.22-1.78 4-4 4s-4-1.78-4-4c0-1.16 1.11-3.4 2.32-5.16c.84-1.22 1.24-1.65 1.68-2.17" />
+                                </svg>
+                            </span>
+                            遗精
                         </button>
                         <button class="type-btn" id="typeBtnTrain" onclick="selectType('train')">
                             <span class="type-icon">
+                                <!-- 牛牛训练图标 -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+                                    <path d="M0 0h256v256H0z" fill="none" />
+                                    <path d="M104 192a8 8 0 0 1-8 8H80a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m72-8h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16m-76-48a12 12 0 1 0-12-12a12 12 0 0 0 12 12m56 0a12 12 0 1 0-12-12a12 12 0 0 0 12 12m88.39-13.88A16 16 0 0 1 232 128h-32v32a40 40 0 0 1-24 72H80a40 40 0 0 1-24-72v-32H24a16 16 0 0 1-15.69-19a56.13 56.13 0 0 1 54.91-45h1.64A55.83 55.83 0 0 1 48 24a8 8 0 0 1 16 0a40 40 0 0 0 40 40h48a40 40 0 0 0 40-40a8 8 0 0 1 16 0a55.83 55.83 0 0 1-16.86 40h1.64a56.13 56.13 0 0 1 54.91 45a15.82 15.82 0 0 1-3.3 13.12M72 152.8a40.6 40.6 0 0 1 8-.8h96a40.6 40.6 0 0 1 8 .8V104a24 24 0 0 0-24-24H96a24 24 0 0 0-24 24ZM56 112v-8a39.8 39.8 0 0 1 8-24h-.8A40.09 40.09 0 0 0 24 112Zm144 80a24 24 0 0 0-24-24H80a24 24 0 0 0 0 48h96a24 24 0 0 0 24-24m32-80a40.08 40.08 0 0 0-39.2-32h-.8a39.8 39.8 0 0 1 8 24v8Z" />
+                                </svg>
                             </span>
                             牛牛训练
                         </button>
@@ -800,8 +866,8 @@
                 <div class="stat-label">平均每月频次</div>
                 <div class="stat-detail" id="statAvgDetail"></div>
             </div>
-            <div class="stat-card accent-purple">
-                <div class="stat-value purple" id="statTotalAll">0</div>
+            <div class="stat-card accent-yellow">
+                <div class="stat-value yellow" id="statTotalAll">0</div>
                 <div class="stat-label">全部记录数</div>
                 <div class="stat-detail" id="statTotalDetail"></div>
             </div>
@@ -826,7 +892,8 @@
             <div class="chart-bars" id="chartBars"></div>
             <div class="chart-legend">
                 <span><span class="legend-dot" style="background:var(--type-self)"></span>自慰</span>
-                <span><span class="legend-dot" style="background:var(--type-sex)"></span>性生活</span>
+                <span><span class="legend-dot" style="background:var(--type-sex)"></span>性交</span>
+                <span><span class="legend-dot" style="background:var(--type-wet)"></span>遗精</span>
                 <span><span class="legend-dot" style="background:var(--type-train)"></span>牛牛训练</span>
             </div>
         </div>
@@ -874,6 +941,7 @@
             const recordNoteInput = document.getElementById('recordNote');
             const typeBtnSelf = document.getElementById('typeBtnSelf');
             const typeBtnSex = document.getElementById('typeBtnSex');
+            const typeBtnWet = document.getElementById('typeBtnWet');
             const typeBtnTrain = document.getElementById('typeBtnTrain');
             const recordsListEl = document.getElementById('recordsList');
             const recordsCountLabel = document.getElementById('recordsCountLabel');
@@ -887,17 +955,42 @@
             let calendarMonth = new Date().getMonth();
             let chartYear = new Date().getFullYear();
 
-            const selfIconSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>';
-            const sexIconSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><g transform="translate(2,12) scale(0.6)"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></g><g transform="translate(22,10) scale(0.6) rotate(180)"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></g></svg>';
-            const trainIconSVG = '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M 30 25 C 25 15, 75 15, 70 25 C 85 35, 90 70, 75 85 C 70 95, 30 95, 25 85 C 10 70, 15 35, 30 25 Z" fill="black" /><path d="M 30 20 C 20 5, 40 5, 35 15 Z" fill="black" /><path d="M 70 20 C 80 5, 60 5, 65 15 Z" fill="black" /><path d="M 15 40 Q 5 25 30 25 Q 25 35 15 40 Z" fill="black" /><path d="M 85 40 Q 95 25 70 25 Q 75 35 85 40 Z" fill="black" /><circle cx="38" cy="50" r="5" fill="white" /><circle cx="62" cy="50" r="5" fill="white" /><circle cx="38" cy="50" r="2" fill="black" /><circle cx="62" cy="50" r="2" fill="black" /><circle cx="45" cy="75" r="6" fill="white" /><circle cx="55" cy="75" r="6" fill="white" /></svg>';
+            // ★★★ 自慰图标（手形） ★★★
+            const selfIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M20.988 12.396L16 9.545V4.75c0-1.93-1.57-3.5-3.5-3.5S9 2.82 9 4.75v4.795l-4.988 2.851a3 3 0 0 0 2.313 5.489L9 17.12v.838l-.874.699a3 3 0 0 0 3.216 5.025c.004-.001.5-.183 1.158-.183l1.158.183a2.998 2.998 0 0 0 3.216-5.025L16 17.958v-.838l2.676.765a2.999 2.999 0 0 0 2.312-5.489m-.566 2.992a1 1 0 0 1-1.196.573L14 14.469v4.451l1.625 1.3a1 1 0 0 1-1.072 1.675c-.008-.004-.824-.395-2.053-.395s-2.045.391-2.053.395a1 1 0 0 1-1.072-1.675L11 18.92v-4.451l-5.226 1.493a1 1 0 0 1-.77-1.829L11 10.706V4.75c0-.827.673-1.5 1.5-1.5s1.5.673 1.5 1.5v5.956l5.996 3.426a1 1 0 0 1 .426 1.256" /><circle cx="12.5" cy="4.5" r=".5" fill="currentColor" /></svg>';
 
+            // ★★★ 性交图标（爱心） ★★★
+            const sexIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" /></svg>';
+
+            // ★★★ 遗精图标（水滴） ★★★
+            const wetIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="m12 3.77l-.75.84S9.97 6.06 8.68 7.94S6 12.07 6 14.23a6 6 0 0 0 6 6a6 6 0 0 0 6-6c0-2.16-1.39-4.41-2.68-6.29s-2.57-3.33-2.57-3.33zm0 3.13c.44.52.84.95 1.68 2.17c1.21 1.76 2.32 4 2.32 5.16c0 2.22-1.78 4-4 4s-4-1.78-4-4c0-1.16 1.11-3.4 2.32-5.16c.84-1.22 1.24-1.65 1.68-2.17" /></svg>';
+
+            // ★★★ 牛牛训练图标（用户提供的 SVG） ★★★
+            const trainIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M0 0h256v256H0z" fill="none" /><path d="M104 192a8 8 0 0 1-8 8H80a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m72-8h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16m-76-48a12 12 0 1 0-12-12a12 12 0 0 0 12 12m56 0a12 12 0 1 0-12-12a12 12 0 0 0 12 12m88.39-13.88A16 16 0 0 1 232 128h-32v32a40 40 0 0 1-24 72H80a40 40 0 0 1-24-72v-32H24a16 16 0 0 1-15.69-19a56.13 56.13 0 0 1 54.91-45h1.64A55.83 55.83 0 0 1 48 24a8 8 0 0 1 16 0a40 40 0 0 0 40 40h48a40 40 0 0 0 40-40a8 8 0 0 1 16 0a55.83 55.83 0 0 1-16.86 40h1.64a56.13 56.13 0 0 1 54.91 45a15.82 15.82 0 0 1-3.3 13.12M72 152.8a40.6 40.6 0 0 1 8-.8h96a40.6 40.6 0 0 1 8 .8V104a24 24 0 0 0-24-24H96a24 24 0 0 0-24 24ZM56 112v-8a39.8 39.8 0 0 1 8-24h-.8A40.09 40.09 0 0 0 24 112Zm144 80a24 24 0 0 0-24-24H80a24 24 0 0 0 0 48h96a24 24 0 0 0 24-24m32-80a40.08 40.08 0 0 0-39.2-32h-.8a39.8 39.8 0 0 1 8 24v8Z" /></svg>';
+
+            // ----- Toast -----
             function showToast(msg, type = '', duration = 2200) {
-                if (window._toastTimer) clearTimeout(window._toastTimer);
+                if (window._toastTimer) {
+                    clearTimeout(window._toastTimer);
+                    window._toastTimer = null;
+                }
                 toastEl.textContent = msg;
                 toastEl.className = 'toast ' + type + ' show';
-                window._toastTimer = setTimeout(() => { toastEl.classList.remove('show'); }, duration);
+                if (duration > 0) {
+                    window._toastTimer = setTimeout(() => {
+                        toastEl.classList.remove('show');
+                    }, duration);
+                }
             }
 
+            function hideToast() {
+                toastEl.classList.remove('show');
+                if (window._toastTimer) {
+                    clearTimeout(window._toastTimer);
+                    window._toastTimer = null;
+                }
+            }
+
+            // ----- Storage -----
             function loadRecords() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
@@ -911,13 +1004,16 @@
 
             function generateId() { return 'rec_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
 
+            // ----- Type selection -----
             window.selectType = function(type) {
                 currentType = type;
                 typeBtnSelf.className = type === 'self' ? 'type-btn selected-self' : 'type-btn';
                 typeBtnSex.className = type === 'sex' ? 'type-btn selected-sex' : 'type-btn';
+                typeBtnWet.className = type === 'wet' ? 'type-btn selected-wet' : 'type-btn';
                 typeBtnTrain.className = type === 'train' ? 'type-btn selected-train' : 'type-btn';
             };
 
+            // ----- Add record -----
             window.addRecord = function() {
                 const date = recordDateInput.value.trim();
                 const rawDuration = recordDurationInput.value.trim();
@@ -952,17 +1048,25 @@
                 currentType = 'self';
                 typeBtnSelf.className = 'type-btn selected-self';
                 typeBtnSex.className = 'type-btn';
+                typeBtnWet.className = 'type-btn';
                 typeBtnTrain.className = 'type-btn';
             }
 
-            window.deleteRecord = function(id) {
-                if (!confirm('确定删除这条记录吗？')) return;
-                const records = loadRecords().filter(r => r.id !== id);
-                saveRecords(records);
+            // ----- Delete (with optional skipConfirm) -----
+            window.deleteRecord = function(id, skipConfirm = false) {
+                if (!skipConfirm && !confirm('确定删除这条记录吗？')) return;
+                const records = loadRecords();
+                const filtered = records.filter(r => r.id !== id);
+                if (filtered.length === records.length) {
+                    showToast('记录不存在', 'warning');
+                    return;
+                }
+                saveRecords(filtered);
                 renderAll();
-                showToast('🗑️ 记录已删除');
+                showToast('🗑️ 记录已删除', 'success');
             };
 
+            // ----- Clear all -----
             window.clearAllRecords = function() {
                 const records = loadRecords();
                 if (!records.length) return showToast('没有记录可清空');
@@ -974,6 +1078,7 @@
                 showToast('已清空（已自动备份）', 'warning');
             };
 
+            // ----- Export / Import -----
             window.exportData = function() {
                 const records = loadRecords();
                 if (!records.length) return showToast('无记录可导出');
@@ -993,10 +1098,6 @@
                 const file = e.target.files[0];
                 e.target.value = '';
                 if (!file) return;
-
-                const pathDisplay = file.path || file.webkitRelativePath || file.name;
-                showToast(`📂 已选择文件: ${pathDisplay}`);
-
                 const reader = new FileReader();
                 reader.onload = function(ev) {
                     try {
@@ -1020,36 +1121,42 @@
                 reader.readAsText(file);
             };
 
+            // ----- Stats (排除 train 类型) -----
             function calculateStats(records) {
                 const now = new Date();
                 const y = now.getFullYear();
                 const m = now.getMonth();
                 const cmStr = `${y}-${String(m+1).padStart(2,'0')}`;
-                let mSelf = 0, mSex = 0;
-                let ySelf = 0, ySex = 0;
+                let mSelf = 0, mSex = 0, mWet = 0;
+                let ySelf = 0, ySex = 0, yWet = 0;
                 const yearMonths = new Set();
                 records.forEach(r => {
-                    if (r.type === 'train') return;
                     const [year, month] = r.date.split('-');
-                    yearMonths.add(`${year}-${month}`);
-                    if (`${year}-${month}` === cmStr) {
-                        if (r.type === 'self') mSelf++;
-                        else if (r.type === 'sex') mSex++;
+                    // 只有非 train 的记录才计入活跃月份
+                    if (r.type !== 'train') {
+                        yearMonths.add(`${year}-${month}`);
                     }
-                    if (year === String(y)) {
-                        if (r.type === 'self') ySelf++;
-                        else if (r.type === 'sex') ySex++;
+                    if (r.type === 'self') {
+                        if (`${year}-${month}` === cmStr) mSelf++;
+                        if (year === String(y)) ySelf++;
+                    } else if (r.type === 'sex') {
+                        if (`${year}-${month}` === cmStr) mSex++;
+                        if (year === String(y)) ySex++;
+                    } else if (r.type === 'wet') {
+                        if (`${year}-${month}` === cmStr) mWet++;
+                        if (year === String(y)) yWet++;
                     }
+                    // train 不参与计数
                 });
-                const total = records.filter(r => r.type !== 'train').length;
+                const totalAll = records.filter(r => r.type !== 'train').length;
                 const active = yearMonths.size;
                 return {
-                    monthSelf: mSelf, monthSex: mSex, monthTrain: 0,
-                    monthTotal: mSelf + mSex,
-                    yearSelf: ySelf, yearSex: ySex, yearTrain: 0,
-                    yearTotal: ySelf + ySex,
-                    totalAll: total,
-                    avgMonthly: active ? (total / active).toFixed(1) : 0,
+                    monthSelf: mSelf, monthSex: mSex, monthWet: mWet,
+                    monthTotal: mSelf + mSex + mWet,
+                    yearSelf: ySelf, yearSex: ySex, yearWet: yWet,
+                    yearTotal: ySelf + ySex + yWet,
+                    totalAll: totalAll,
+                    avgMonthly: active ? (totalAll / active).toFixed(1) : 0,
                     activeMonths: active
                 };
             }
@@ -1057,60 +1164,42 @@
             function renderStats(s) {
                 document.getElementById('statMonthTotal').textContent = s.monthTotal;
                 document.getElementById('statMonthDetail').innerHTML =
-                    `<span class="mini-icon" style="color:var(--type-self)">${selfIconSVG}</span> ${s.monthSelf} · <span class="mini-icon" style="color:var(--type-sex)">${sexIconSVG}</span> ${s.monthSex}`;
+                    `<span class="mini-icon" style="color:var(--type-self)">${selfIconSVG}</span> ${s.monthSelf} · ` +
+                    `<span class="mini-icon" style="color:var(--type-sex)">${sexIconSVG}</span> ${s.monthSex} · ` +
+                    `<span class="mini-icon" style="color:var(--type-wet)">${wetIconSVG}</span> ${s.monthWet}`;
+
                 document.getElementById('statYearTotal').textContent = s.yearTotal;
                 document.getElementById('statYearDetail').innerHTML =
-                    `<span class="mini-icon" style="color:var(--type-self)">${selfIconSVG}</span> ${s.yearSelf} · <span class="mini-icon" style="color:var(--type-sex)">${sexIconSVG}</span> ${s.yearSex}`;
+                    `<span class="mini-icon" style="color:var(--type-self)">${selfIconSVG}</span> ${s.yearSelf} · ` +
+                    `<span class="mini-icon" style="color:var(--type-sex)">${sexIconSVG}</span> ${s.yearSex} · ` +
+                    `<span class="mini-icon" style="color:var(--type-wet)">${wetIconSVG}</span> ${s.yearWet}`;
+
                 document.getElementById('statAvgMonthly').textContent = s.avgMonthly;
                 document.getElementById('statAvgDetail').textContent = `活跃月份 ${s.activeMonths}`;
                 document.getElementById('statTotalAll').textContent = s.totalAll;
                 document.getElementById('statTotalDetail').textContent = `全部合计`;
             }
 
-            function renderRecordsList(records) {
-                recordsCountLabel.textContent = `共 ${records.length} 条`;
-                if (!records.length) { recordsListEl.innerHTML = '<div class="empty-state">📭<p>暂无记录</p></div>'; return; }
-                let html = '';
-                records.forEach(r => {
-                    const isSelf = r.type === 'self';
-                    const isSex = r.type === 'sex';
-                    const isTrain = r.type === 'train';
-                    let badgeClass = 'badge-self';
-                    let label = '自慰';
-                    let icon = selfIconSVG;
-                    if (isSex) { badgeClass = 'badge-sex'; label = '性生活'; icon = sexIconSVG; }
-                    else if (isTrain) { badgeClass = 'badge-train'; label = '牛牛训练'; icon = ''; }
-                    html += `<div class="record-item">
-                        <div class="record-type-badge ${badgeClass}">${icon}</div>
-                        <div class="record-info">
-                            <div class="record-date">${r.date} ${getWeekday(r.date)}</div>
-                            <div class="record-meta">
-                                <span>${label}</span>
-                                ${r.duration > 0 ? `<span>⏱️ ${r.duration}分钟</span>` : ''}
-                            </div>
-                            ${r.note ? `<div style="font-size:0.8rem;color:#555;">💬 ${escapeHtml(r.note)}</div>` : ''}
-                        </div>
-                    </div>`;
-                });
-                recordsListEl.innerHTML = html;
-            }
-
+            // ----- Helpers -----
             function getWeekday(d) { return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date(d + 'T00:00:00')
                     .getDay()] || ''; }
 
             function escapeHtml(s) { const div = document.createElement('div');
                 div.textContent = s; return div.innerHTML; }
 
+            // ----- Calendar -----
             function renderCalendar() {
                 const records = loadRecords();
                 const dateCount = {
                     self: {},
                     sex: {},
+                    wet: {},
                     train: {}
                 };
                 records.forEach(r => {
                     if (r.type === 'self') dateCount.self[r.date] = (dateCount.self[r.date] || 0) + 1;
                     else if (r.type === 'sex') dateCount.sex[r.date] = (dateCount.sex[r.date] || 0) + 1;
+                    else if (r.type === 'wet') dateCount.wet[r.date] = (dateCount.wet[r.date] || 0) + 1;
                     else if (r.type === 'train') dateCount.train[r.date] = (dateCount.train[r.date] || 0) + 1;
                 });
 
@@ -1132,6 +1221,7 @@
                 const typeColors = {
                     self: 'var(--type-self)',
                     sex: 'var(--type-sex)',
+                    wet: 'var(--type-wet)',
                     train: 'var(--type-train)'
                 };
 
@@ -1140,6 +1230,7 @@
                         `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                     const selfCount = dateCount.self[dateStr] || 0;
                     const sexCount = dateCount.sex[dateStr] || 0;
+                    const wetCount = dateCount.wet[dateStr] || 0;
                     const trainCount = dateCount.train[dateStr] || 0;
 
                     let cls = 'calendar-day';
@@ -1149,6 +1240,7 @@
                     const groups = [
                         { type: 'self', count: Math.min(selfCount, 5) },
                         { type: 'sex', count: Math.min(sexCount, 5) },
+                        { type: 'wet', count: Math.min(wetCount, 5) },
                         { type: 'train', count: Math.min(trainCount, 5) }
                     ];
                     const totalDots = groups.reduce((s, g) => s + g.count, 0);
@@ -1185,31 +1277,33 @@
 
             window.setDate = function(dateStr) {
                 recordDateInput.value = dateStr;
-                // 滚动到表单卡片
                 document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
             };
 
+            // ----- Chart (包含 train) -----
             function renderChart() {
                 const records = loadRecords();
                 const year = chartYear;
                 chartYearLabel.textContent = year;
-                const months = Array.from({ length: 12 }, (_, i) => ({ month: i + 1, self: 0, sex: 0, train: 0 }));
+                const months = Array.from({ length: 12 }, (_, i) => ({ month: i + 1, self: 0, sex: 0, wet: 0, train: 0 }));
                 records.forEach(r => {
                     const [y, m] = r.date.split('-').map(Number);
                     if (y === year && m) {
                         if (r.type === 'self') months[m - 1].self++;
                         else if (r.type === 'sex') months[m - 1].sex++;
+                        else if (r.type === 'wet') months[m - 1].wet++;
                         else if (r.type === 'train') months[m - 1].train++;
                     }
                 });
-                const maxVal = Math.max(1, ...months.map(m => m.self + m.sex + m.train));
+                const maxVal = Math.max(1, ...months.map(m => m.self + m.sex + m.wet + m.train));
                 let html = '';
                 months.forEach(m => {
                     const selfH = (m.self / maxVal) * 130;
                     const sexH = (m.sex / maxVal) * 130;
+                    const wetH = (m.wet / maxVal) * 130;
                     const trainH = (m.train / maxVal) * 130;
                     html +=
-                        `<div class="chart-month-col"><div class="bar-wrapper"><div class="bar-self" style="height:${selfH}px"></div><div class="bar-sex" style="height:${sexH}px"></div><div class="bar-train" style="height:${trainH}px"></div></div><div class="month-label">${m.month}月</div></div>`;
+                        `<div class="chart-month-col"><div class="bar-wrapper"><div class="bar-self" style="height:${selfH}px"></div><div class="bar-sex" style="height:${sexH}px"></div><div class="bar-wet" style="height:${wetH}px"></div><div class="bar-train" style="height:${trainH}px"></div></div><div class="month-label">${m.month}月</div></div>`;
                 });
                 chartBarsEl.innerHTML = html;
             }
@@ -1217,6 +1311,111 @@
             window.changeChartYear = function(delta) { chartYear += delta;
                 renderChart(); };
 
+            // ----- 长按删除逻辑 -----
+            function bindLongPress(element) {
+                let timer = null;
+                let isPressing = false;
+                const id = element.dataset.id;
+                if (!id) return;
+
+                function startPress(e) {
+                    if (e.type === 'mousedown' && e.button !== 0) return;
+                    if (isPressing) return;
+
+                    isPressing = true;
+                    element.classList.add('long-pressing');
+
+                    showToast('继续长按 5 秒删除', 'info', 0);
+                    toastEl.classList.add('show');
+
+                    timer = setTimeout(() => {
+                        if (isPressing) {
+                            deleteRecord(id, true);
+                            isPressing = false;
+                            timer = null;
+                            hideToast();
+                        }
+                    }, 5000);
+                }
+
+                function cancelPress(e) {
+                    if (timer) {
+                        clearTimeout(timer);
+                        timer = null;
+                    }
+                    if (isPressing) {
+                        isPressing = false;
+                        element.classList.remove('long-pressing');
+                        hideToast();
+                    }
+                }
+
+                element.addEventListener('touchstart', startPress, { passive: true });
+                element.addEventListener('touchend', cancelPress, { passive: true });
+                element.addEventListener('touchcancel', cancelPress, { passive: true });
+                element.addEventListener('touchmove', cancelPress, { passive: true });
+
+                element.addEventListener('mousedown', startPress);
+                element.addEventListener('mouseup', cancelPress);
+                element.addEventListener('mouseleave', cancelPress);
+                element.addEventListener('mousemove', function(e) {
+                    if (isPressing) {
+                        const rect = element.getBoundingClientRect();
+                        const x = e.clientX,
+                            y = e.clientY;
+                        if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+                            cancelPress(e);
+                        }
+                    }
+                });
+            }
+
+            // ----- Render records list (包含所有图标) -----
+            function renderRecordsList(records) {
+                recordsCountLabel.textContent = `共 ${records.length} 条`;
+                if (!records.length) {
+                    recordsListEl.innerHTML = '<div class="empty-state">📭<p>暂无记录</p></div>';
+                    return;
+                }
+                let html = '';
+                records.forEach(r => {
+                    const isSelf = r.type === 'self';
+                    const isSex = r.type === 'sex';
+                    const isWet = r.type === 'wet';
+                    const isTrain = r.type === 'train';
+                    let badgeClass = 'badge-self';
+                    let label = '自慰';
+                    let icon = selfIconSVG;
+                    if (isSex) { badgeClass = 'badge-sex';
+                        label = '性交';
+                        icon = sexIconSVG; } else if (isWet) { badgeClass = 'badge-wet';
+                        label = '遗精';
+                        icon = wetIconSVG; } else if (isTrain) { badgeClass = 'badge-train';
+                        label = '牛牛训练';
+                        icon = trainIconSVG; }
+
+                    const durationDisplay = r.duration > 0 ? `${r.duration} 分钟` : '';
+
+                    html += `<div class="record-item" data-id="${r.id}">
+                        <div class="record-type-badge ${badgeClass}">${icon}</div>
+                        <div class="record-info">
+                            <div class="record-date">${r.date} ${getWeekday(r.date)}</div>
+                            <div class="record-meta">
+                                <span>${label}</span>
+                                ${durationDisplay ? `<span>${durationDisplay}</span>` : ''}
+                            </div>
+                            ${r.note ? `<div style="font-size:0.8rem;color:#555;">💬 ${escapeHtml(r.note)}</div>` : ''}
+                        </div>
+                    </div>`;
+                });
+                recordsListEl.innerHTML = html;
+
+                document.querySelectorAll('.record-item').forEach(el => {
+                    bindLongPress(el);
+                });
+            }
+
+            // ----- Render all -----
             function renderAll() {
                 const records = loadRecords();
                 renderStats(calculateStats(records));
@@ -1225,6 +1424,7 @@
                 renderChart();
             }
 
+            // ----- Init -----
             function init() {
                 const today = new Date().toISOString().split('T')[0];
                 recordDateInput.value = today;
