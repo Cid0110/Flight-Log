@@ -217,14 +217,6 @@
         .record-dot:hover {
             transform: scale(1.4);
         }
-        .dot-group {
-            display: inline-flex;
-            gap: 3px;
-            align-items: center;
-        }
-        .dot-group+.dot-group {
-            margin-left: 4px;
-        }
 
         .form-card {
             background: var(--card-bg);
@@ -518,6 +510,68 @@
             flex-wrap: wrap;
         }
 
+        /* ===== 分页控件 ===== */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 8px 6px;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            background: none;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            min-width: 48px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            background: #fff;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .page-btn:active {
+            transform: scale(0.95);
+            background: var(--border);
+        }
+        .page-btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+            transform: none;
+        }
+        .page-btn:not(:disabled):hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .page-info {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            min-width: 60px;
+            text-align: center;
+            padding: 0 6px;
+        }
+        .page-info .current-page {
+            color: var(--text);
+            font-weight: 800;
+        }
+        .page-info .total-pages {
+            color: var(--text-secondary);
+        }
+
         .chart-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -529,20 +583,64 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .chart-year-selector {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 3px;
             font-weight: 700;
             font-family: var(--font-mono);
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
         .chart-year-nav {
             background: none;
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 4px 10px;
+            padding: 4px 8px;
             cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            line-height: 1.4;
+            min-width: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        .chart-year-nav:active {
+            background: var(--border);
+        }
+        .chart-year-nav.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .selector-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text);
+            padding: 0 2px;
+            min-width: 44px;
+            text-align: center;
+        }
+        .selector-divider {
+            color: var(--border);
+            font-weight: 300;
+            margin: 0 2px;
+            font-size: 0.9rem;
+        }
+        .half-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .year-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
         }
         .chart-bars {
             display: flex;
@@ -572,9 +670,10 @@
         .bar-sex,
         .bar-wet,
         .bar-train {
-            width: 8px;
+            width: 10px;
             border-radius: 4px 4px 0 0;
             min-height: 2px;
+            transition: height 0.25s ease;
         }
         .bar-self {
             background: var(--type-self);
@@ -706,6 +805,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ===== 响应式 ===== */
         @media (min-width: 480px) {
             .form-row {
                 flex-direction: row;
@@ -718,7 +818,7 @@
             .bar-sex,
             .bar-wet,
             .bar-train {
-                width: 12px;
+                width: 14px;
             }
             .dot-container {
                 gap: 4px;
@@ -727,9 +827,65 @@
                 width: 6px;
                 height: 6px;
             }
+            .chart-year-nav {
+                padding: 4px 12px;
+                font-size: 0.9rem;
+            }
+            .selector-label {
+                font-size: 0.9rem;
+                min-width: 52px;
+            }
+            .page-btn {
+                padding: 8px 20px;
+                font-size: 1rem;
+                min-width: 52px;
+                min-height: 48px;
+            }
+            .page-info {
+                font-size: 0.95rem;
+                min-width: 70px;
+            }
         }
 
-        @media (max-width: 380px) {
+        @media (max-width: 420px) {
+            .chart-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .chart-year-selector {
+                justify-content: center;
+            }
+            .chart-year-nav {
+                padding: 4px 6px;
+                font-size: 0.7rem;
+                min-width: 26px;
+            }
+            .selector-label {
+                font-size: 0.7rem;
+                min-width: 36px;
+            }
+            .selector-divider {
+                margin: 0 1px;
+            }
+            .half-group,
+            .year-group {
+                gap: 1px;
+            }
+            .bar-self,
+            .bar-sex,
+            .bar-wet,
+            .bar-train {
+                width: 8px;
+            }
+            .chart-bars {
+                height: 150px;
+                gap: 2px;
+            }
+            .bar-wrapper {
+                height: 110px;
+                gap: 1px;
+            }
             .type-btn {
                 font-size: 0.72rem;
                 padding: 10px 4px;
@@ -741,6 +897,69 @@
             }
             .app-title {
                 font-size: 1.6rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-value {
+                font-size: 1.6rem;
+            }
+            .pagination-container {
+                gap: 8px;
+                padding: 12px 4px 4px;
+            }
+            .page-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                min-width: 42px;
+                min-height: 40px;
+            }
+            .page-info {
+                font-size: 0.75rem;
+                min-width: 50px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .chart-year-selector {
+                gap: 2px;
+            }
+            .chart-year-nav {
+                padding: 3px 4px;
+                font-size: 0.6rem;
+                min-width: 22px;
+            }
+            .selector-label {
+                font-size: 0.6rem;
+                min-width: 30px;
+            }
+            .bar-self,
+            .bar-sex,
+            .bar-wet,
+            .bar-train {
+                width: 6px;
+            }
+            .chart-bars {
+                height: 130px;
+                gap: 1px;
+            }
+            .bar-wrapper {
+                height: 95px;
+                gap: 1px;
+            }
+            .month-label {
+                font-size: 0.55rem;
+            }
+            .page-btn {
+                padding: 4px 8px;
+                font-size: 0.7rem;
+                min-width: 36px;
+                min-height: 36px;
+            }
+            .page-info {
+                font-size: 0.7rem;
+                min-width: 44px;
             }
         }
     </style>
@@ -800,7 +1019,6 @@
                     <div class="type-toggle-group">
                         <button class="type-btn selected-self" id="typeBtnSelf" onclick="selectType('self')">
                             <span class="type-icon">
-                                <!-- 自慰：手形图标 -->
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path d="M0 0h24v24H0z" fill="none" />
                                     <path fill="currentColor" d="M20.988 12.396L16 9.545V4.75c0-1.93-1.57-3.5-3.5-3.5S9 2.82 9 4.75v4.795l-4.988 2.851a3 3 0 0 0 2.313 5.489L9 17.12v.838l-.874.699a3 3 0 0 0 3.216 5.025c.004-.001.5-.183 1.158-.183l1.158.183a2.998 2.998 0 0 0 3.216-5.025L16 17.958v-.838l2.676.765a2.999 2.999 0 0 0 2.312-5.489m-.566 2.992a1 1 0 0 1-1.196.573L14 14.469v4.451l1.625 1.3a1 1 0 0 1-1.072 1.675c-.008-.004-.824-.395-2.053-.395s-2.045.391-2.053.395a1 1 0 0 1-1.072-1.675L11 18.92v-4.451l-5.226 1.493a1 1 0 0 1-.77-1.829L11 10.706V4.75c0-.827.673-1.5 1.5-1.5s1.5.673 1.5 1.5v5.956l5.996 3.426a1 1 0 0 1 .426 1.256" />
@@ -811,7 +1029,6 @@
                         </button>
                         <button class="type-btn" id="typeBtnSex" onclick="selectType('sex')">
                             <span class="type-icon">
-                                <!-- 性交：爱心图标 -->
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path d="M0 0h24v24H0z" fill="none" />
                                     <path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" />
@@ -821,7 +1038,6 @@
                         </button>
                         <button class="type-btn" id="typeBtnWet" onclick="selectType('wet')">
                             <span class="type-icon">
-                                <!-- 遗精：水滴图标 -->
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path d="M0 0h24v24H0z" fill="none" />
                                     <path fill="currentColor" d="m12 3.77l-.75.84S9.97 6.06 8.68 7.94S6 12.07 6 14.23a6 6 0 0 0 6 6a6 6 0 0 0 6-6c0-2.16-1.39-4.41-2.68-6.29s-2.57-3.33-2.57-3.33zm0 3.13c.44.52.84.95 1.68 2.17c1.21 1.76 2.32 4 2.32 5.16c0 2.22-1.78 4-4 4s-4-1.78-4-4c0-1.16 1.11-3.4 2.32-5.16c.84-1.22 1.24-1.65 1.68-2.17" />
@@ -831,7 +1047,6 @@
                         </button>
                         <button class="type-btn" id="typeBtnTrain" onclick="selectType('train')">
                             <span class="type-icon">
-                                <!-- 牛牛训练图标 -->
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
                                     <path d="M0 0h256v256H0z" fill="none" />
                                     <path d="M104 192a8 8 0 0 1-8 8H80a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m72-8h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16m-76-48a12 12 0 1 0-12-12a12 12 0 0 0 12 12m56 0a12 12 0 1 0-12-12a12 12 0 0 0 12 12m88.39-13.88A16 16 0 0 1 232 128h-32v32a40 40 0 0 1-24 72H80a40 40 0 0 1-24-72v-32H24a16 16 0 0 1-15.69-19a56.13 56.13 0 0 1 54.91-45h1.64A55.83 55.83 0 0 1 48 24a8 8 0 0 1 16 0a40 40 0 0 0 40 40h48a40 40 0 0 0 40-40a8 8 0 0 1 16 0a55.83 55.83 0 0 1-16.86 40h1.64a56.13 56.13 0 0 1 54.91 45a15.82 15.82 0 0 1-3.3 13.12M72 152.8a40.6 40.6 0 0 1 8-.8h96a40.6 40.6 0 0 1 8 .8V104a24 24 0 0 0-24-24H96a24 24 0 0 0-24 24ZM56 112v-8a39.8 39.8 0 0 1 8-24h-.8A40.09 40.09 0 0 0 24 112Zm144 80a24 24 0 0 0-24-24H80a24 24 0 0 0 0 48h96a24 24 0 0 0 24-24m32-80a40.08 40.08 0 0 0-39.2-32h-.8a39.8 39.8 0 0 1 8 24v8Z" />
@@ -873,20 +1088,40 @@
             </div>
         </div>
 
-        <!-- 历史记录 -->
+        <!-- 历史记录（带分页） -->
         <div class="records-card">
-            <div class="records-header"><span class="card-title"><span class="dot"></span> 历史记录</span><span class="records-count" id="recordsCountLabel">共 0 条</span></div>
+            <div class="records-header">
+                <span class="card-title"><span class="dot"></span> 历史记录</span>
+                <span class="records-count" id="recordsCountLabel">共 0 条</span>
+            </div>
             <div id="recordsList"><div class="empty-state">📭<p>暂无记录</p></div></div>
+            <!-- 分页控件：移除了 onclick，使用事件委托 -->
+            <div class="pagination-container" id="paginationContainer">
+                <button class="page-btn" id="prevPageBtn" disabled>◀</button>
+                <span class="page-info" id="pageInfo">
+                    <span class="current-page" id="pageCurrent">1</span>
+                    <span class="total-pages">/ <span id="pageTotal">1</span></span>
+                </span>
+                <button class="page-btn" id="nextPageBtn" disabled>▶</button>
+            </div>
         </div>
 
         <!-- 月度条形图 -->
         <div class="chart-card">
             <div class="chart-header">
                 <span class="card-title"><span class="dot"></span> 月度统计</span>
-                <div class="chart-year-selector">
-                    <button class="chart-year-nav" onclick="changeChartYear(-1)">◀</button>
-                    <span id="chartYearLabel">2025</span>
-                    <button class="chart-year-nav" onclick="changeChartYear(1)">▶</button>
+                <div class="chart-year-selector" id="chartSelector">
+                    <span class="half-group">
+                        <button class="chart-year-nav" id="halfPrevBtn" onclick="changeHalfYear(-1)">◀</button>
+                        <span class="selector-label" id="halfYearLabel">1-6月</span>
+                        <button class="chart-year-nav" id="halfNextBtn" onclick="changeHalfYear(1)">▶</button>
+                    </span>
+                    <span class="selector-divider">|</span>
+                    <span class="year-group">
+                        <button class="chart-year-nav" onclick="changeChartYear(-1)">◀</button>
+                        <span class="selector-label" id="chartYearLabel">2025</span>
+                        <button class="chart-year-nav" onclick="changeChartYear(1)">▶</button>
+                    </span>
                 </div>
             </div>
             <div class="chart-bars" id="chartBars"></div>
@@ -948,26 +1183,34 @@
             const calendarMonthLabel = document.getElementById('calendarMonthLabel');
             const calendarGrid = document.getElementById('calendarGrid');
             const chartYearLabel = document.getElementById('chartYearLabel');
+            const halfYearLabel = document.getElementById('halfYearLabel');
             const chartBarsEl = document.getElementById('chartBars');
+            const pageInfoCurrent = document.getElementById('pageCurrent');
+            const pageInfoTotal = document.getElementById('pageTotal');
+            const prevPageBtn = document.getElementById('prevPageBtn');
+            const nextPageBtn = document.getElementById('nextPageBtn');
+            const paginationContainer = document.getElementById('paginationContainer');
 
             let currentType = 'self';
             let calendarYear = new Date().getFullYear();
             let calendarMonth = new Date().getMonth();
             let chartYear = new Date().getFullYear();
+            let halfYear = 0; // 0: 1-6月, 1: 7-12月
 
-            // ★★★ 自慰图标（手形） ★★★
+            // ===== 分页状态 =====
+            const PAGE_SIZE = 10;
+            let currentPage = 1;
+
+            // ★★★ 图标定义 ★★★
             const selfIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="M20.988 12.396L16 9.545V4.75c0-1.93-1.57-3.5-3.5-3.5S9 2.82 9 4.75v4.795l-4.988 2.851a3 3 0 0 0 2.313 5.489L9 17.12v.838l-.874.699a3 3 0 0 0 3.216 5.025c.004-.001.5-.183 1.158-.183l1.158.183a2.998 2.998 0 0 0 3.216-5.025L16 17.958v-.838l2.676.765a2.999 2.999 0 0 0 2.312-5.489m-.566 2.992a1 1 0 0 1-1.196.573L14 14.469v4.451l1.625 1.3a1 1 0 0 1-1.072 1.675c-.008-.004-.824-.395-2.053-.395s-2.045.391-2.053.395a1 1 0 0 1-1.072-1.675L11 18.92v-4.451l-5.226 1.493a1 1 0 0 1-.77-1.829L11 10.706V4.75c0-.827.673-1.5 1.5-1.5s1.5.673 1.5 1.5v5.956l5.996 3.426a1 1 0 0 1 .426 1.256" /><circle cx="12.5" cy="4.5" r=".5" fill="currentColor" /></svg>';
 
-            // ★★★ 性交图标（爱心） ★★★
             const sexIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3" /></svg>';
 
-            // ★★★ 遗精图标（水滴） ★★★
             const wetIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none" /><path fill="currentColor" d="m12 3.77l-.75.84S9.97 6.06 8.68 7.94S6 12.07 6 14.23a6 6 0 0 0 6 6a6 6 0 0 0 6-6c0-2.16-1.39-4.41-2.68-6.29s-2.57-3.33-2.57-3.33zm0 3.13c.44.52.84.95 1.68 2.17c1.21 1.76 2.32 4 2.32 5.16c0 2.22-1.78 4-4 4s-4-1.78-4-4c0-1.16 1.11-3.4 2.32-5.16c.84-1.22 1.24-1.65 1.68-2.17" /></svg>';
 
-            // ★★★ 牛牛训练图标（用户提供的 SVG） ★★★
             const trainIconSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M0 0h256v256H0z" fill="none" /><path d="M104 192a8 8 0 0 1-8 8H80a8 8 0 0 1 0-16h16a8 8 0 0 1 8 8m72-8h-16a8 8 0 0 0 0 16h16a8 8 0 0 0 0-16m-76-48a12 12 0 1 0-12-12a12 12 0 0 0 12 12m56 0a12 12 0 1 0-12-12a12 12 0 0 0 12 12m88.39-13.88A16 16 0 0 1 232 128h-32v32a40 40 0 0 1-24 72H80a40 40 0 0 1-24-72v-32H24a16 16 0 0 1-15.69-19a56.13 56.13 0 0 1 54.91-45h1.64A55.83 55.83 0 0 1 48 24a8 8 0 0 1 16 0a40 40 0 0 0 40 40h48a40 40 0 0 0 40-40a8 8 0 0 1 16 0a55.83 55.83 0 0 1-16.86 40h1.64a56.13 56.13 0 0 1 54.91 45a15.82 15.82 0 0 1-3.3 13.12M72 152.8a40.6 40.6 0 0 1 8-.8h96a40.6 40.6 0 0 1 8 .8V104a24 24 0 0 0-24-24H96a24 24 0 0 0-24 24ZM56 112v-8a39.8 39.8 0 0 1 8-24h-.8A40.09 40.09 0 0 0 24 112Zm144 80a24 24 0 0 0-24-24H80a24 24 0 0 0 0 48h96a24 24 0 0 0 24-24m32-80a40.08 40.08 0 0 0-39.2-32h-.8a39.8 39.8 0 0 1 8 24v8Z" /></svg>';
 
-            // ----- Toast -----
+            // ===== Toast =====
             function showToast(msg, type = '', duration = 2200) {
                 if (window._toastTimer) {
                     clearTimeout(window._toastTimer);
@@ -990,7 +1233,7 @@
                 }
             }
 
-            // ----- Storage -----
+            // ===== Storage =====
             function loadRecords() {
                 try {
                     const raw = localStorage.getItem(STORAGE_KEY);
@@ -1004,7 +1247,7 @@
 
             function generateId() { return 'rec_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
 
-            // ----- Type selection -----
+            // ===== Type selection =====
             window.selectType = function(type) {
                 currentType = type;
                 typeBtnSelf.className = type === 'self' ? 'type-btn selected-self' : 'type-btn';
@@ -1013,7 +1256,7 @@
                 typeBtnTrain.className = type === 'train' ? 'type-btn selected-train' : 'type-btn';
             };
 
-            // ----- Add record -----
+            // ===== Add record =====
             window.addRecord = function() {
                 const date = recordDateInput.value.trim();
                 const rawDuration = recordDurationInput.value.trim();
@@ -1035,6 +1278,7 @@
                 records.sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || '').localeCompare(a.createdAt || ''));
                 saveRecords(records);
                 resetForm();
+                resetPagination();
                 renderAll();
                 showToast(`✅ 已记录：${date}`, 'success');
             };
@@ -1052,7 +1296,47 @@
                 typeBtnTrain.className = 'type-btn';
             }
 
-            // ----- Delete (with optional skipConfirm) -----
+            // ===== 分页核心函数 =====
+            function resetPagination() {
+                currentPage = 1;
+            }
+
+            function getTotalPages(totalRecords) {
+                return Math.max(1, Math.ceil(totalRecords / PAGE_SIZE));
+            }
+
+            function getPageData(records, page) {
+                const start = (page - 1) * PAGE_SIZE;
+                const end = start + PAGE_SIZE;
+                return records.slice(start, end);
+            }
+
+            // 翻页函数（闭包内部使用，不暴露到 window）
+            function goToPage(page) {
+                const records = loadRecords();
+                const totalPages = getTotalPages(records.length);
+                if (page < 1 || page > totalPages) return;
+                currentPage = page;
+                renderAll();
+                // 滚动到记录列表区域
+                const card = document.querySelector('.records-card');
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            // ===== 事件委托：分页按钮点击 =====
+            paginationContainer.addEventListener('click', function(e) {
+                const target = e.target.closest('button');
+                if (!target) return;
+                if (target.id === 'prevPageBtn') {
+                    goToPage(currentPage - 1);
+                } else if (target.id === 'nextPageBtn') {
+                    goToPage(currentPage + 1);
+                }
+            });
+
+            // ===== Delete =====
             window.deleteRecord = function(id, skipConfirm = false) {
                 if (!skipConfirm && !confirm('确定删除这条记录吗？')) return;
                 const records = loadRecords();
@@ -1062,11 +1346,16 @@
                     return;
                 }
                 saveRecords(filtered);
+                // 如果当前页没有数据了，且不是第一页，则回退一页
+                const totalPages = getTotalPages(filtered.length);
+                if (currentPage > totalPages && currentPage > 1) {
+                    currentPage = totalPages;
+                }
                 renderAll();
                 showToast('🗑️ 记录已删除', 'success');
             };
 
-            // ----- Clear all -----
+            // ===== Clear all =====
             window.clearAllRecords = function() {
                 const records = loadRecords();
                 if (!records.length) return showToast('没有记录可清空');
@@ -1074,11 +1363,12 @@
                 if (!confirm('再次确认清空？')) return;
                 localStorage.setItem(BACKUP_KEY, JSON.stringify(records));
                 saveRecords([]);
+                resetPagination();
                 renderAll();
                 showToast('已清空（已自动备份）', 'warning');
             };
 
-            // ----- Export / Import -----
+            // ===== Export / Import =====
             window.exportData = function() {
                 const records = loadRecords();
                 if (!records.length) return showToast('无记录可导出');
@@ -1112,6 +1402,7 @@
                         if (old.length) localStorage.setItem(BACKUP_KEY, JSON.stringify(old));
                         valid.sort((a, b) => b.date.localeCompare(a.date));
                         saveRecords(valid);
+                        resetPagination();
                         renderAll();
                         showToast(`📥 已导入 ${valid.length} 条记录`, 'success');
                     } catch (err) {
@@ -1121,18 +1412,21 @@
                 reader.readAsText(file);
             };
 
-            // ----- Stats (排除 train 类型) -----
+            // ===== Stats =====
             function calculateStats(records) {
                 const now = new Date();
                 const y = now.getFullYear();
                 const m = now.getMonth();
                 const cmStr = `${y}-${String(m+1).padStart(2,'0')}`;
-                let mSelf = 0, mSex = 0, mWet = 0;
-                let ySelf = 0, ySex = 0, yWet = 0;
+                let mSelf = 0,
+                    mSex = 0,
+                    mWet = 0;
+                let ySelf = 0,
+                    ySex = 0,
+                    yWet = 0;
                 const yearMonths = new Set();
                 records.forEach(r => {
                     const [year, month] = r.date.split('-');
-                    // 只有非 train 的记录才计入活跃月份
                     if (r.type !== 'train') {
                         yearMonths.add(`${year}-${month}`);
                     }
@@ -1146,14 +1440,17 @@
                         if (`${year}-${month}` === cmStr) mWet++;
                         if (year === String(y)) yWet++;
                     }
-                    // train 不参与计数
                 });
                 const totalAll = records.filter(r => r.type !== 'train').length;
                 const active = yearMonths.size;
                 return {
-                    monthSelf: mSelf, monthSex: mSex, monthWet: mWet,
+                    monthSelf: mSelf,
+                    monthSex: mSex,
+                    monthWet: mWet,
                     monthTotal: mSelf + mSex + mWet,
-                    yearSelf: ySelf, yearSex: ySex, yearWet: yWet,
+                    yearSelf: ySelf,
+                    yearSex: ySex,
+                    yearWet: yWet,
                     yearTotal: ySelf + ySex + yWet,
                     totalAll: totalAll,
                     avgMonthly: active ? (totalAll / active).toFixed(1) : 0,
@@ -1180,14 +1477,14 @@
                 document.getElementById('statTotalDetail').textContent = `全部合计`;
             }
 
-            // ----- Helpers -----
+            // ===== Helpers =====
             function getWeekday(d) { return ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][new Date(d + 'T00:00:00')
                     .getDay()] || ''; }
 
             function escapeHtml(s) { const div = document.createElement('div');
                 div.textContent = s; return div.innerHTML; }
 
-            // ----- Calendar -----
+            // ===== Calendar =====
             function renderCalendar() {
                 const records = loadRecords();
                 const dateCount = {
@@ -1280,21 +1577,37 @@
                 document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
             };
 
-            // ----- Chart (包含 train) -----
+            // ===== Chart =====
             function renderChart() {
                 const records = loadRecords();
                 const year = chartYear;
                 chartYearLabel.textContent = year;
-                const months = Array.from({ length: 12 }, (_, i) => ({ month: i + 1, self: 0, sex: 0, wet: 0, train: 0 }));
+
+                const startMonth = halfYear === 0 ? 1 : 7;
+                const endMonth = halfYear === 0 ? 6 : 12;
+                halfYearLabel.textContent = halfYear === 0 ? '1-6月' : '7-12月';
+
+                const prevBtn = document.getElementById('halfPrevBtn');
+                const nextBtn = document.getElementById('halfNextBtn');
+                if (prevBtn) prevBtn.classList.toggle('disabled', halfYear === 0);
+                if (nextBtn) nextBtn.classList.toggle('disabled', halfYear === 1);
+
+                const months = [];
+                for (let m = startMonth; m <= endMonth; m++) {
+                    months.push({ month: m, self: 0, sex: 0, wet: 0, train: 0 });
+                }
+
                 records.forEach(r => {
                     const [y, m] = r.date.split('-').map(Number);
-                    if (y === year && m) {
-                        if (r.type === 'self') months[m - 1].self++;
-                        else if (r.type === 'sex') months[m - 1].sex++;
-                        else if (r.type === 'wet') months[m - 1].wet++;
-                        else if (r.type === 'train') months[m - 1].train++;
+                    if (y === year && m >= startMonth && m <= endMonth) {
+                        const idx = m - startMonth;
+                        if (r.type === 'self') months[idx].self++;
+                        else if (r.type === 'sex') months[idx].sex++;
+                        else if (r.type === 'wet') months[idx].wet++;
+                        else if (r.type === 'train') months[idx].train++;
                     }
                 });
+
                 const maxVal = Math.max(1, ...months.map(m => m.self + m.sex + m.wet + m.train));
                 let html = '';
                 months.forEach(m => {
@@ -1308,10 +1621,20 @@
                 chartBarsEl.innerHTML = html;
             }
 
-            window.changeChartYear = function(delta) { chartYear += delta;
-                renderChart(); };
+            window.changeHalfYear = function(delta) {
+                const newHalf = halfYear + delta;
+                if (newHalf >= 0 && newHalf <= 1) {
+                    halfYear = newHalf;
+                    renderChart();
+                }
+            };
 
-            // ----- 长按删除逻辑 -----
+            window.changeChartYear = function(delta) {
+                chartYear += delta;
+                renderChart();
+            };
+
+            // ===== 长按删除 =====
             function bindLongPress(element) {
                 let timer = null;
                 let isPressing = false;
@@ -1330,7 +1653,7 @@
 
                     timer = setTimeout(() => {
                         if (isPressing) {
-                            deleteRecord(id, true);
+                            window.deleteRecord(id, true);
                             isPressing = false;
                             timer = null;
                             hideToast();
@@ -1370,13 +1693,15 @@
                 });
             }
 
-            // ----- Render records list (包含所有图标) -----
-            function renderRecordsList(records) {
-                recordsCountLabel.textContent = `共 ${records.length} 条`;
+            // ===== Render records list (分页) =====
+            function renderRecordsList(records, totalCount) {
+                recordsCountLabel.textContent = `共 ${totalCount} 条`;
+
                 if (!records.length) {
                     recordsListEl.innerHTML = '<div class="empty-state">📭<p>暂无记录</p></div>';
                     return;
                 }
+
                 let html = '';
                 records.forEach(r => {
                     const isSelf = r.type === 'self';
@@ -1415,16 +1740,48 @@
                 });
             }
 
-            // ----- Render all -----
+            // ===== 渲染分页控件 =====
+            function renderPagination(totalRecords) {
+                const totalPages = getTotalPages(totalRecords);
+                const current = Math.min(currentPage, totalPages);
+
+                // 更新页码显示
+                pageInfoCurrent.textContent = current;
+                pageInfoTotal.textContent = totalPages;
+
+                // 更新按钮状态
+                prevPageBtn.disabled = current <= 1;
+                nextPageBtn.disabled = current >= totalPages;
+
+                // 如果总记录数为0，隐藏分页控件
+                if (totalRecords === 0) {
+                    paginationContainer.style.display = 'none';
+                } else {
+                    paginationContainer.style.display = 'flex';
+                }
+            }
+
+            // ===== Render all =====
             function renderAll() {
                 const records = loadRecords();
+                const totalRecords = records.length;
+                const totalPages = getTotalPages(totalRecords);
+
+                // 修正当前页
+                if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+                if (currentPage < 1) currentPage = 1;
+
+                // 获取当前页数据
+                const pageRecords = getPageData(records, currentPage);
+
                 renderStats(calculateStats(records));
-                renderRecordsList(records);
+                renderRecordsList(pageRecords, totalRecords);
+                renderPagination(totalRecords);
                 renderCalendar();
                 renderChart();
             }
 
-            // ----- Init -----
+            // ===== Init =====
             function init() {
                 const today = new Date().toISOString().split('T')[0];
                 recordDateInput.value = today;
@@ -1432,6 +1789,11 @@
                 calendarYear = new Date().getFullYear();
                 calendarMonth = new Date().getMonth();
                 chartYear = new Date().getFullYear();
+
+                const currentMonth = new Date().getMonth() + 1;
+                halfYear = currentMonth <= 6 ? 0 : 1;
+
+                resetPagination();
                 renderAll();
             }
 
