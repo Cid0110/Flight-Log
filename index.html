@@ -675,6 +675,26 @@
             min-height: 2px;
             transition: height 0.25s ease;
         }
+
+        /* 月度统计柱状图：在每根柱子顶部显示次数 */
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            gap: 2px;
+        }
+
+        .bar-count {
+            font-size: 0.58rem;
+            line-height: 1;
+            min-height: 9px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
         .bar-self {
             background: var(--type-self);
         }
@@ -1616,7 +1636,15 @@
                     const wetH = (m.wet / maxVal) * 130;
                     const trainH = (m.train / maxVal) * 130;
                     html +=
-                        `<div class="chart-month-col"><div class="bar-wrapper"><div class="bar-self" style="height:${selfH}px"></div><div class="bar-sex" style="height:${sexH}px"></div><div class="bar-wet" style="height:${wetH}px"></div><div class="bar-train" style="height:${trainH}px"></div></div><div class="month-label">${m.month}月</div></div>`;
+                        `<div class="chart-month-col">
+                            <div class="bar-wrapper">
+                                <div class="bar-item"><span class="bar-count">${m.self}</span><div class="bar-self" style="height:${selfH}px"></div></div>
+                                <div class="bar-item"><span class="bar-count">${m.sex}</span><div class="bar-sex" style="height:${sexH}px"></div></div>
+                                <div class="bar-item"><span class="bar-count">${m.wet}</span><div class="bar-wet" style="height:${wetH}px"></div></div>
+                                <div class="bar-item"><span class="bar-count">${m.train}</span><div class="bar-train" style="height:${trainH}px"></div></div>
+                            </div>
+                            <div class="month-label">${m.month}月</div>
+                        </div>`;
                 });
                 chartBarsEl.innerHTML = html;
             }
